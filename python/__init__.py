@@ -5,6 +5,7 @@ and CI can import modules as `python.<submodule>`.
 """
 
 __all__ = [
+    "backtesting",
     "downloader",
     "indicators",
     "features",
