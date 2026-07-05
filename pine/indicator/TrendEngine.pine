@@ -1,0 +1,14 @@
+// TrendEngine.pine
+// Simple trend engine: EMA crossover and slope detection
+//@version=5
+indicator(title="Trend Engine (VEDA)", overlay=false)
+fast = input.int(14, "Fast EMA")
+slow = input.int(50, "Slow EMA")
+ema_fast = ta.ema(close, fast)
+ema_slow = ta.ema(close, slow)
+trend_up = ema_fast > ema_slow
+trend_down = ema_fast < ema_slow
+plot(ema_fast, color=color.orange, title="EMA Fast")
+plot(ema_slow, color=color.blue, title="EMA Slow")
+plotshape(trend_up, title="Trend Up", style=shape.triangleup, location=location.bottom, color=color.green, size=size.tiny)
+plotshape(trend_down, title="Trend Down", style=shape.triangledown, location=location.top, color=color.red, size=size.tiny)

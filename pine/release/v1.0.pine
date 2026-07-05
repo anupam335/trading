@@ -1,0 +1,7 @@
+// v1.0 release - Core + Strategy combined
+//@version=5
+indicator("VEDA v1.0 Core", overlay=true)
+plot(close)
+
+// Strategy release reference
+// See pine/strategy/Strategy.pine for strategy implementation.

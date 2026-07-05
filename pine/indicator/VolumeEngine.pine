@@ -1,0 +1,8 @@
+// VolumeEngine.pine
+// OBV and basic volume spikes
+//@version=5
+indicator(title="Volume Engine (VEDA)", overlay=false)
+obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
+obv_sma = ta.sma(obv, 20)
+plot(obv, color=color.gray, title="OBV")
+plot(obv_sma, color=color.orange, title="OBV SMA")

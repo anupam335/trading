@@ -1,0 +1,10 @@
+// Dashboard.pine
+// Compact dashboard for confidence and engine states
+//@version=5
+indicator(title="VEDA Dashboard", overlay=true)
+ema_fast = ta.ema(close, 14)
+ema_slow = ta.ema(close, 50)
+trend = ema_fast > ema_slow ? 1 : ema_fast < ema_slow ? -1 : 0
+rsi = ta.rsi(close, 14)
+obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
+label.new(bar_index, high, text=str.tostring(trend) + " | RSI:" + str.tostring(math.round(rsi)), xloc=xloc.bar_index, yloc=yloc.abovebar, color=color.new(color.blue, 90), textcolor=color.white, style=label.style_label_left)

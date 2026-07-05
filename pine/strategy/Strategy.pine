@@ -1,8 +1,35 @@
-// Strategy.pine - Strategy combining indicator engines
+// Strategy.pine - Strategy combining engines into executable strategy
 
-//@version=5
-strategy("AI-NIFTY-Predictor-Pro Strategy", overlay=true)
+// @version=5
+strategy("AI-NIFTY-Predictor-Pro Strategy", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
 
-// Placeholder strategy
-if (ta.crossover(ta.sma(close,14), ta.sma(close,28)))
-    strategy.entry("Long", strategy.long)
+// Signals: reuse Core logic locally (TradingView doesn't support local imports)
+ema_fast = ta.ema(close, 14)
+ema_slow = ta.ema(close, 50)
+trend = ema_fast > ema_slow ? 1 : ema_fast < ema_slow ? -1 : 0
+
+rsi = ta.rsi(close, 14)
+mom = rsi > 60 ? 1 : rsi < 40 ? -1 : 0
+
+obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
+obv_ma = ta.sma(obv, 20)
+vol = obv > obv_ma ? 1 : obv < obv_ma ? -1 : 0
+
+setup = close > ta.ema(close,20) ? 1 : -1
+risk = ta.atr(14) < ta.sma(ta.atr(14),50) ? 1 : -1
+
+confidence = trend + mom + vol + setup + risk
+
+long_entry = confidence >= 3
+long_exit = confidence <= 0
+
+if (long_entry)
+    strategy.entry("VEDA Long", strategy.long)
+
+if (long_exit)
+    strategy.close("VEDA Long")
+
+// Plot confidence and signals
+plot(confidence, title="Confidence", color=color.fuchsia)
+plotshape(long_entry, title="Entry", style=shape.arrowup, location=location.belowbar, color=color.green)
+plotshape(long_exit, title="Exit", style=shape.arrowdown, location=location.abovebar, color=color.red)

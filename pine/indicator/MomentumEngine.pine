@@ -1,0 +1,9 @@
+// MomentumEngine.pine
+// RSI-based momentum engine
+//@version=5
+indicator(title="Momentum Engine (VEDA)", overlay=false)
+len = input.int(14, "RSI Length")
+rsi = ta.rsi(close, len)
+plot(rsi, color=color.purple, title="RSI")
+hline(70, "Overbought", color=color.red)
+hline(30, "Oversold", color=color.green)

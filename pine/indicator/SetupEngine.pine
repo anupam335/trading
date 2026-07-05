@@ -1,0 +1,9 @@
+// SetupEngine.pine
+// Common setups detection (pullbacks, breakouts)
+//@version=5
+indicator(title="Setup Engine (VEDA)", overlay=true)
+// Example: simple pullback to 20 EMA
+ema20 = ta.ema(close, 20)
+pullback = close < ema20 and close > ta.lowest(low, 5)
+plot(ema20, color=color.yellow)
+plotshape(pullback, title="Pullback", style=shape.labeldown, location=location.abovebar, color=color.teal, text="PB")

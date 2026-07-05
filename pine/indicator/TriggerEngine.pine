@@ -1,0 +1,11 @@
+// TriggerEngine.pine
+// Entry/exit trigger rules
+//@version=5
+indicator(title="Trigger Engine (VEDA)", overlay=true)
+// Example trigger: price crossing above EMA20 and RSI not overbought
+ema20 = ta.ema(close, 20)
+rsi = ta.rsi(close, 14)
+enter = ta.crossover(close, ema20) and rsi < 70
+exit = ta.crossunder(close, ema20) or rsi > 85
+plotshape(enter, title="Enter", style=shape.arrowup, location=location.belowbar, color=color.green)
+plotshape(exit, title="Exit", style=shape.arrowdown, location=location.abovebar, color=color.red)

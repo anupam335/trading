@@ -1,0 +1,11 @@
+// RiskEngine.pine
+// ATR-based stops and position sizing helpers
+//@version=5
+indicator(title="Risk Engine (VEDA)", overlay=true)
+atr_len = input.int(14, "ATR Length")
+mult = input.float(1.5, "ATR Multiplier")
+atr_val = ta.atr(atr_len)
+stop_long = close - atr_val * mult
+stop_short = close + atr_val * mult
+plot(stop_long, color=color.red, title="Stop Long")
+plot(stop_short, color=color.green, title="Stop Short")

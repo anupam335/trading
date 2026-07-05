@@ -1,8 +1,45 @@
 // Core.pine - Project VEDA
-// Aggregates engines: Trend, Momentum, Volume, Setup, Trigger, Risk
+// Combined core indicator that aggregates engine signals into a confidence score
 
-//@version=5
+// @version=5
 indicator("AI-NIFTY-Predictor-Pro Core", overlay=true)
 
-// Placeholder for engines
-plot(close, title="price")
+// Trend: EMA crossover
+fast = input.int(14, "Fast EMA")
+slow = input.int(50, "Slow EMA")
+ema_fast = ta.ema(close, fast)
+ema_slow = ta.ema(close, slow)
+trend_score = ema_fast > ema_slow ? 1 : ema_fast < ema_slow ? -1 : 0
+
+// Momentum: RSI
+rsi_len = input.int(14, "RSI Length")
+rsi = ta.rsi(close, rsi_len)
+momentum_score = rsi > 60 ? 1 : rsi < 40 ? -1 : 0
+
+// Volume: OBV trend
+obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
+obv_ma = ta.sma(obv, 20)
+volume_score = obv > obv_ma ? 1 : obv < obv_ma ? -1 : 0
+
+// Setup: price relation to EMA20
+ema20 = ta.ema(close, 20)
+setup_score = close > ema20 ? 1 : close < ema20 ? -1 : 0
+
+// Risk: ATR normalized
+atr_val = ta.atr(14)
+risk_score = atr_val < ta.sma(atr_val, 50) ? 1 : -1
+
+// Aggregate confidence (simple sum, range -5..5)
+confidence = trend_score + momentum_score + volume_score + setup_score + risk_score
+
+// Visuals
+plot(close, title="Price", color=color.white)
+hline(0, "Neutral", color=color.gray)
+plot(confidence, title="Confidence", color=color.fuchsia, linewidth=2)
+bgcolor(confidence > 2 ? color.new(color.green, 90) : confidence < -2 ? color.new(color.red,90) : na)
+
+// Simple alerts
+enter = confidence >= 3
+exit = confidence <= -3
+alertcondition(enter, title="VEDA Confidence Enter", message="VEDA confidence enter signal")
+alertcondition(exit, title="VEDA Confidence Exit", message="VEDA confidence exit signal")

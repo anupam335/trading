@@ -1,0 +1,12 @@
+// Alerts.pine
+// Alert conditions for entries/exits and risk breaches
+//@version=5
+indicator(title="VEDA Alerts", overlay=true)
+ema20 = ta.ema(close, 20)
+rsi = ta.rsi(close, 14)
+enter = ta.crossover(close, ema20) and rsi < 70
+exit = ta.crossunder(close, ema20) or rsi > 85
+alertcondition(enter, title="VEDA Enter", message="VEDA enter signal for {{ticker}}")
+alertcondition(exit, title="VEDA Exit", message="VEDA exit signal for {{ticker}}")
+plotshape(enter, title="Enter", style=shape.triangleup, location=location.belowbar, color=color.lime)
+plotshape(exit, title="Exit", style=shape.triangledown, location=location.abovebar, color=color.orange)
