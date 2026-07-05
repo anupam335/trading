@@ -1,0 +1,8 @@
+// Core.pine - Project VEDA
+// Aggregates engines: Trend, Momentum, Volume, Setup, Trigger, Risk
+
+//@version=5
+indicator("AI-NIFTY-Predictor-Pro Core", overlay=true)
+
+// Placeholder for engines
+plot(close, title="price")

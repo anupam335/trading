@@ -1,0 +1,4 @@
+// v0.1 release placeholder
+//@version=5
+indicator("v0.1 Release - Core", overlay=true)
+plot(close)

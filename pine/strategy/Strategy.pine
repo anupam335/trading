@@ -1,0 +1,8 @@
+// Strategy.pine - Strategy combining indicator engines
+
+//@version=5
+strategy("AI-NIFTY-Predictor-Pro Strategy", overlay=true)
+
+// Placeholder strategy
+if (ta.crossover(ta.sma(close,14), ta.sma(close,28)))
+    strategy.entry("Long", strategy.long)

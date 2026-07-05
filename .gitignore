@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+env/
+venv/
+.env
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+/data/processed/
+/data/reports/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Secrets
+secrets.json
