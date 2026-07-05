@@ -1,18 +1,20 @@
 // Core.pine - Project VEDA
-// Combined core indicator that aggregates engine signals into a confidence score
+// Combined core indicator that aggregates engine signals into a confidence score.
+// This script is intended as a readable, publishable indicator. Versioned and
+// parameterized so users can tune engine sensitivity.
 
 // @version=5
-indicator("AI-NIFTY-Predictor-Pro Core", overlay=true)
+indicator("AI-NIFTY-Predictor-Pro Core (v1.0)", shorttitle="VEDA Core", overlay=true)
 
-// Trend: EMA crossover
-fast = input.int(14, "Fast EMA")
-slow = input.int(50, "Slow EMA")
+// Trend engine inputs
+fast = input.int(14, "Fast EMA", minval=1)
+slow = input.int(50, "Slow EMA", minval=1)
 ema_fast = ta.ema(close, fast)
 ema_slow = ta.ema(close, slow)
 trend_score = ema_fast > ema_slow ? 1 : ema_fast < ema_slow ? -1 : 0
 
 // Momentum: RSI
-rsi_len = input.int(14, "RSI Length")
+rsi_len = input.int(14, "RSI Length", minval=1)
 rsi = ta.rsi(close, rsi_len)
 momentum_score = rsi > 60 ? 1 : rsi < 40 ? -1 : 0
 
@@ -21,12 +23,14 @@ obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
 obv_ma = ta.sma(obv, 20)
 volume_score = obv > obv_ma ? 1 : obv < obv_ma ? -1 : 0
 
-// Setup: price relation to EMA20
-ema20 = ta.ema(close, 20)
+// Setup engine: relation to configurable EMA
+ema20_len = input.int(20, "Setup EMA Length", minval=1)
+ema20 = ta.ema(close, ema20_len)
 setup_score = close > ema20 ? 1 : close < ema20 ? -1 : 0
 
-// Risk: ATR normalized
-atr_val = ta.atr(14)
+// Risk engine: ATR (configurable length)
+atr_len = input.int(14, "ATR Length", minval=1)
+atr_val = ta.atr(atr_len)
 risk_score = atr_val < ta.sma(atr_val, 50) ? 1 : -1
 
 // Aggregate confidence (simple sum, range -5..5)

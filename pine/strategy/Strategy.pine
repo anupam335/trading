@@ -1,27 +1,39 @@
-// Strategy.pine - Strategy combining engines into executable strategy
-
+// Strategy.pine - Strategy combining engines into an executable strategy
 // @version=5
-strategy("AI-NIFTY-Predictor-Pro Strategy", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
+// Release: v1.0
+strategy("AI-NIFTY-Predictor-Pro Strategy (v1.0)", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
 
-// Signals: reuse Core logic locally (TradingView doesn't support local imports)
-ema_fast = ta.ema(close, 14)
-ema_slow = ta.ema(close, 50)
+// Inputs for tuning
+fast_len = input.int(14, "Fast EMA", minval=1)
+slow_len = input.int(50, "Slow EMA", minval=1)
+rsi_len = input.int(14, "RSI Length", minval=1)
+obv_ma_len = input.int(20, "OBV MA Length", minval=1)
+setup_ema = input.int(20, "Setup EMA Length", minval=1)
+atr_len = input.int(14, "ATR Length", minval=1)
+
+// Signals: local implementation of Core scoring
+ema_fast = ta.ema(close, fast_len)
+ema_slow = ta.ema(close, slow_len)
 trend = ema_fast > ema_slow ? 1 : ema_fast < ema_slow ? -1 : 0
 
-rsi = ta.rsi(close, 14)
+rsi = ta.rsi(close, rsi_len)
 mom = rsi > 60 ? 1 : rsi < 40 ? -1 : 0
 
 obv = ta.cum(change(close) > 0 ? volume : change(close) < 0 ? -volume : 0)
-obv_ma = ta.sma(obv, 20)
+obv_ma = ta.sma(obv, obv_ma_len)
 vol = obv > obv_ma ? 1 : obv < obv_ma ? -1 : 0
 
-setup = close > ta.ema(close,20) ? 1 : -1
-risk = ta.atr(14) < ta.sma(ta.atr(14),50) ? 1 : -1
+setup = close > ta.ema(close, setup_ema) ? 1 : -1
+risk = ta.atr(atr_len) < ta.sma(ta.atr(atr_len),50) ? 1 : -1
 
 confidence = trend + mom + vol + setup + risk
 
-long_entry = confidence >= 3
-long_exit = confidence <= 0
+// Entry/exit thresholds (exposed for tuning)
+entry_threshold = input.int(3, "Entry Confidence Threshold")
+exit_threshold = input.int(0, "Exit Confidence Threshold")
+
+long_entry = confidence >= entry_threshold
+long_exit = confidence <= exit_threshold
 
 if (long_entry)
     strategy.entry("VEDA Long", strategy.long)
