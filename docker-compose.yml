@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  downloader:
+    build: .
+    restart: always
+    environment:
+      - VEDA_TICKER=^NSEI
+      - VEDA_MINUTES=60
+    command: ["python", "-m", "python.main", "schedule", "^NSEI", "--minutes", "60"]
+    volumes:
+      - .:/app
