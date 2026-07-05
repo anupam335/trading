@@ -1,0 +1,16 @@
+[project]
+name = "ai-nifty-predictor-pro"
+version = "0.1.0"
+description = "AI NIFTY Predictor Pro - Project VEDA"
+authors = [ { name = "Anupa", email = "veda@example.com" } ]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.dependencies]
+# core deps are listed in requirements.txt; keep minimal here
+pandas = ">=2.0"
+numpy = ">=1.25"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
