@@ -7,3 +7,4 @@ pytest
 yfinance
 ta
 requests
+apscheduler
